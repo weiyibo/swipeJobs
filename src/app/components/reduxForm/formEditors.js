@@ -6,7 +6,6 @@ export const Input = ({ input, label, type }) => {
 
 export const Select = ({ input, label, list, handleChange }) => {
     let selectValues = input.value && typeof input.value === 'object' ? input.value.id : input.value;
-    console.log(selectValues)
     return (
         <select class="form-control no-corner" value={selectValues} placeholder={label} onChange={handleChange}>
             {list.map(item => (

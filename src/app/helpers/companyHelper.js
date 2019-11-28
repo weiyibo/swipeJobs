@@ -3,7 +3,8 @@ const companyHelper = {
         CREATE_COMPANY: "CREATE_COMPANY"
     },
     ACTIONS: {
-        CHANGE_EDITING_COMPANY: "CHANGE_EDITING_COMPANY"
+        CHANGE_EDITING_COMPANY: "CHANGE_EDITING_COMPANY",
+        UPDATE_COMPANY: "UPDATE_COMPANY"
     },
     defaultCompanyList: [
         {

@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Modal, Button} from 'react-bootstrap';
-import {updateEditingCompany} from '../actions/companyActions';
-import { Field, reduxForm, change } from "redux-form";
+import {updateEditingCompany, updateCompany} from '../actions/companyActions';
+import { Field, reduxForm, change, submit } from "redux-form";
 import {Container, ContainerAddon} from './reduxForm/formContainers'
 import {Input, Select} from './reduxForm/formEditors'
 import {changeEditingPerson} from '../actions/personActions'
@@ -12,7 +12,7 @@ const CreateAddon = ContainerAddon("", "glyphicon glyphicon-plus");
 const FormInput = Container(Input);
 const FormSelectWithCreation = Container(Select, { PostFixAddon: CreateAddon });
 
-let CompanyEditingFrom = ({ handleSubmit, initialValues, persons, handleClose, handleSelectorChange, handleEditingPerson }) => {
+let CompanyEditingFrom = ({ handleSubmit, initialValues, persons, handleClose, handleSelectorChange, handleEditingPerson, handleSave }) => {
 
     const personOptions = persons.map(person => ({id: person.id, label: person.name, obj: person}));
 
@@ -27,7 +27,7 @@ let CompanyEditingFrom = ({ handleSubmit, initialValues, persons, handleClose, h
                     <Field name="name" label="Name" component={FormInput} type="text" />
                     <Field name="country" label="Country" component={FormInput} type="text" />
                     <Field name="address" label="Address" component={FormInput} type="text" />
-                    <Field name="contactPerson" label="Contact Person" component={FormSelectWithCreation}
+                    <Field name="contactPerson.id" label="Contact Person" component={FormSelectWithCreation}
                            list={personOptions} postfixOnClick={handleEditingPerson} handleChange={(e) => handleSelectorChange(e, personOptions)}/>
                     <Field name="contactPerson.email" label="Email" component={FormInput} type="text" />
                     <Field name="contactPerson.phone" label="Phone" component={FormInput} type="text" />
@@ -36,7 +36,7 @@ let CompanyEditingFrom = ({ handleSubmit, initialValues, persons, handleClose, h
 
             <Modal.Footer>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button bsStyle="primary">Save</Button>
+                <Button bsStyle="primary" type="submit" onClick={handleSave}>Save</Button>
             </Modal.Footer>
         </Modal>
     )
@@ -82,8 +82,11 @@ const mapStoreToProps = (store, props) => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        handleSave: () => {
+            dispatch(submit("companyEditingForm"));
+        },
         onSubmit: (values) => {
-            console.log(values)
+            dispatch(updateCompany(values));
         },
         handleClose: () => {
             dispatch(updateEditingCompany(null))

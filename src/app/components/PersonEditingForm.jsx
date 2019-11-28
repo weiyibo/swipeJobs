@@ -1,16 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Modal, Button} from 'react-bootstrap';
-import { Field, reduxForm, change } from "redux-form";
+import { Field, reduxForm, change, submit } from "redux-form";
 import {Container} from './reduxForm/formContainers'
 import {Input} from './reduxForm/formEditors'
-import {changeEditingPerson} from '../actions/personActions'
+import {changeEditingPerson, createNewPerson} from '../actions/personActions'
 import personHelper from "../helpers/personHelper";
-
 
 const FormInput = Container(Input);
 
-let PersonEditingForm = ({ handleSubmit, initialValues, handleClose }) => {
+let PersonEditingForm = ({ handleSubmit, initialValues, handleClose, handleSave}) => {
     return (
         <Modal show={ initialValues != null } aria-labelledby="contained-modal-title" onHide={handleClose}>
             <Modal.Header closeButton>
@@ -19,27 +18,25 @@ let PersonEditingForm = ({ handleSubmit, initialValues, handleClose }) => {
 
             <Modal.Body>
                 <form onSubmit={handleSubmit}>
-                    {/*<Field name="name" label="Name" component={FormInput} type="text" />*/}
-                   {/* <Field name="email" label="Email" component={FormInput} type="text" />
-                    <Field name="phone" label="Phone" component={FormInput} type="text" />*/}
+                    <Field name="name" label="Name" component={FormInput} type="text" />
+                    <Field name="email" label="Email" component={FormInput} type="text" />
+                    <Field name="phone" label="Phone" component={FormInput} type="text" />
                 </form>
             </Modal.Body>
 
             <Modal.Footer>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button bsStyle="primary">Save</Button>
+                <Button bsStyle="primary" type="submit" onClick={handleSave}>Save</Button>
             </Modal.Footer>
         </Modal>
     )
 }
-
 
 const validate = values => {
     const errors = {}
     if (!values.name) {
         errors.name = 'Required';
     }
-
 
     if (!values.email) {
         errors.email = 'Required';
@@ -52,7 +49,7 @@ const validate = values => {
     return errors;
 }
 
-PersonEditingForm.jsx = reduxForm({
+PersonEditingForm = reduxForm({
     form: "personEditingForm",
     validate,
     enableReinitialize:true,
@@ -66,11 +63,14 @@ const mapStoreToProps = (store, props) => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        handleSave: () => {
+            dispatch(submit("personEditingForm"));
+        },
         onSubmit: (values) => {
-            console.log(values)
+            dispatch(createNewPerson(values));
         },
         handleClose: () => {
-            dispatch(changeEditingPerson(null))
+            dispatch(changeEditingPerson(null));
         },
     }
 }

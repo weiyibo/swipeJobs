@@ -2,7 +2,8 @@ const personHelper = {
     REST_ACTIONS: {
     },
     ACTIONS: {
-        CHANGE_EDITING_PERSON: "CHANGE_EDITING_PERSON"
+        CHANGE_EDITING_PERSON: "CHANGE_EDITING_PERSON",
+        CREATE_NEW_PERSON: "CREATE_NEW_PERSON"
     },
     defaultPersonList: [
         {
