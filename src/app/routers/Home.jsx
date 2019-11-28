@@ -1,29 +1,38 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Tabs, Tab} from 'react-bootstrap';
 import { withRouter } from "react-router-dom";
-import accountHelper from '../helpers/accountHelper';
-import {fetchJobs, changeTab, acceptJob, rejectJob, closeWarningDialog} from '../actions/jobActions';
-import JobPanel from '../components/Job.jsx'
-import EmptyMessage from "../components/EmptyMessage.jsx";
-import WarningDialog from "../components/WarningDialog.jsx";
+import {updateEditingCompany} from '../actions/companyActions';
+import CompanyEditingFrom from "../components/CompanyEditingFrom.jsx";
+import PersonEditingForm from "../components/PersonEditingForm.jsx";
 
 
-const Home = ({ activeTabId, matchedJobs, acceptedJobs, rejectedJobs, onTabChange, account, onAccept, onReject, warningObject, closeWarningDialog}) => {
+const Home = ({ companies, editCompany }) => {
     return (
-        <div className="content">
-            <Tabs defaultActiveKey={1} id="jobs-tab" activeKey={activeTabId} onSelect={onTabChange}>
-                <Tab eventKey={1} title="Matched Jobs">
-                    { matchedJobs.length > 0 ?  <JobPanel jobs={matchedJobs} onAccept={(job) => onAccept(account, job)} onReject={(job) => onReject(account, job)}/> : <EmptyMessage message="No job matches"/>}
-                </Tab>
-                <Tab eventKey={2} title="Accepted Jobs">
-                    { acceptedJobs.length > 0 ?  <JobPanel jobs={acceptedJobs} isShowButtons={false}/> : <EmptyMessage message="No job accepted"/>}
-                </Tab>
-                <Tab eventKey={3} title="Rejected Jobs">
-                    { rejectedJobs.length > 0 ?  <JobPanel jobs={rejectedJobs} isShowButtons={false}/> : <EmptyMessage message="No job Rejected"/>}
-                </Tab>
-            </Tabs>
-            <WarningDialog warningObject={warningObject} handleHide={closeWarningDialog}/>
+        <div className="text-center">
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Contact Person</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {
+                    companies.map(company => <tr key={company.id}>
+                        <td className="text-left">{company.id}</td>
+                        <td className="text-left">{company.name}</td>
+                        <td className="text-left">{company.contactPerson.name}</td>
+                        <td className="text-left"><button className="btn btn-primary btn-sm" onClick={() => editCompany(company)}>Edit</button></td>
+                    </tr>)
+                }
+                </tbody>
+            </table>
+
+            <CompanyEditingFrom/>
+
+            <PersonEditingForm/>
         </div>
     )
 }
@@ -31,31 +40,14 @@ const Home = ({ activeTabId, matchedJobs, acceptedJobs, rejectedJobs, onTabChang
 
 const mapStoreToProps = (store, props) => {
     return {
-        matchedJobs: store.job.matchedJobs,
-        activeTabId: store.job.activeTabId,
-        acceptedJobs: store.job.acceptedJobs,
-        rejectedJobs: store.job.rejectedJobs,
-        account: store.account.account,
-        warningObject: store.job.warningObject || null
+        companies: store.company.companies
     }
 }
 
 const mapDispatchToProps = dispatch => {
-    setTimeout(() => {
-        dispatch(fetchJobs(accountHelper.defaultAccount.id));
-    }, 0);
     return {
-        onTabChange: (activeTabId) => {
-           dispatch(changeTab(activeTabId));
-        },
-        onAccept: (account, job) => {
-            dispatch(acceptJob(account.workerId, job));
-        },
-        onReject: (account, job) => {
-            dispatch(rejectJob(account.workerId, job));
-        },
-        closeWarningDialog: () => {
-            dispatch(closeWarningDialog());
+        editCompany: (company) => {
+            dispatch(updateEditingCompany(company));
         }
     }
 }

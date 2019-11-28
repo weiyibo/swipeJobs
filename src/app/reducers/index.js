@@ -1,9 +1,11 @@
+import { reducer as form } from 'redux-form'
+import company from "./companyReducer"
 import busy from "./busyReducer";
-import account from "./accountReducer";
-import job from "./jobReducer";
+import person from './personReducer'
 
 export default {
-    job,
-    account,
+    person,
+    form,
+    company,
     busy,
 };
